@@ -117,6 +117,17 @@
         alert('Error loading videos. Check the console for details.');
     }
 });
+
+        document.getElementById('cleanupButton').addEventListener('click', async () => {
+            try {
+            const response = await fetch('http://localhost:3003/cleanup', { method: 'POST' });
+            const result = await response.json();
+            alert(result.message);
+            } catch (error) {
+            console.error('Error during cleanup:', error);
+            alert('Error during cleanup. Check the console for details.');
+            }
+        });
     </script>
 </body>
 </html>

@@ -22,14 +22,16 @@ app.post('/upload', upload.single('video'), async (req, res) => {
     }
   
     const { filename, originalname } = req.file;
-    const filePath = path.join('videos', filename);  
+    const newFilename = filename + '.mp4';  
+    fs.renameSync(path.join(__dirname, '../videos', filename), path.join(__dirname, '../videos', newFilename));
+    const filePath = path.join('videos', newFilename);
   
     try {
       await pool.execute(
         'INSERT INTO videos (filename, originalname, path) VALUES (?, ?, ?)',
-        [filename, originalname, filePath]
+        [newFilename, originalname, filePath]
       );
-      console.log('Uploaded file:', { filename, originalname, path: filePath });
+      console.log('Uploaded file:', { filename: newFilename, originalname, path: filePath });
       res.status(201).json({ message: 'Video uploaded successfully' });
     } catch (error) {
       console.error('Error saving video information:', error);
