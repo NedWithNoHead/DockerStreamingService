@@ -122,11 +122,3 @@ Contributions to improve Horn Pub are welcome. Please follow these steps:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
-
-## Acknowledgments
-
-- Thanks to all contributors who have helped shape Horn Pub
-- Inspired by modern microservices architectures and video streaming platforms
