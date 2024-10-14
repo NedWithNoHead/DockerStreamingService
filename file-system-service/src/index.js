@@ -1,9 +1,11 @@
 const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const VIDEOS_DIR = path.join(__dirname, '..', 'videos');
 
@@ -26,10 +28,6 @@ app.get('/read/:filename', async (req, res) => {
     console.error('Error reading file:', error);
     res.status(500).json({ error: 'Error reading file' });
   }
-});
-
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK' });
 });
 
 const port = process.env.PORT || 3003;

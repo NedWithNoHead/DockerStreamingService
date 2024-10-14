@@ -39,60 +39,84 @@
     </video>
 
     <script>
+        async function makeRequest(url, method, body) {
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                console.log(data);
+                return data;
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred. Check the console for details.');
+            }
+        }
+
         document.getElementById('registerForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const response = await fetch('http://localhost:3000/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: document.getElementById('regUsername').value,
-                    password: document.getElementById('regPassword').value
-                })
+            const result = await makeRequest('http://localhost:3000/register', 'POST', {
+                username: document.getElementById('regUsername').value,
+                password: document.getElementById('regPassword').value
             });
-            const result = await response.json();
-            alert(result.message);
+            if (result) alert(result.message);
         });
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
-            const response = await fetch('http://localhost:3000/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    username: document.getElementById('loginUsername').value,
-                    password: document.getElementById('loginPassword').value
-                })
+            const result = await makeRequest('http://localhost:3000/login', 'POST', {
+                username: document.getElementById('loginUsername').value,
+                password: document.getElementById('loginPassword').value
             });
-            const result = await response.json();
-            alert(result.message);
+            if (result) alert(result.message);
         });
 
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData();
             formData.append('video', document.getElementById('videoFile').files[0]);
-            const response = await fetch('http://localhost:3001/upload', {
-                method: 'POST',
-                body: formData
-            });
-            const result = await response.json();
-            alert(result.message);
+            try {
+                const response = await fetch('http://localhost:3001/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+                alert(result.message);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during upload. Check the console for details.');
+            }
         });
 
         document.getElementById('loadVideos').addEventListener('click', async () => {
-            const response = await fetch('http://localhost:3002/videos');
-            const videos = await response.json();
-            const videoList = document.getElementById('videoList');
-            videoList.innerHTML = '';
-            videos.forEach(video => {
-                const li = document.createElement('li');
-                li.textContent = video.originalname;
-                li.onclick = () => {
-                    document.getElementById('videoPlayer').src = `http://localhost:3002/video/${video.id}`;
+    try {
+        const response = await fetch('http://localhost:3002/videos');
+        const videos = await response.json();
+        const videoList = document.getElementById('videoList');
+        videoList.innerHTML = '';
+        videos.forEach(video => {
+            const li = document.createElement('li');
+            li.textContent = video.originalname;
+            li.onclick = () => {
+                const videoPlayer = document.getElementById('videoPlayer');
+                videoPlayer.src = `http://localhost:3002/video/${video.id}`;
+                videoPlayer.onerror = (e) => {
+                    console.error('Video error:', e);
+                    document.getElementById('videoError').textContent = 'Error loading video. Check console for details.';
                 };
-                videoList.appendChild(li);
-            });
+                videoPlayer.load();  // Force the video to load
+            };
+            videoList.appendChild(li);
         });
+    } catch (error) {
+        console.error('Error loading videos:', error);
+        alert('Error loading videos. Check the console for details.');
+    }
+});
     </script>
 </body>
 </html>

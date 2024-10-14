@@ -1,8 +1,10 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
+const cors = require('cors');
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
@@ -44,10 +46,6 @@ app.post('/login', async (req, res) => {
     console.error('Error logging in:', error);
     res.status(500).json({ error: 'Error logging in' });
   }
-});
-
-app.get('/health', (req, res) => {
-  res.json({ status: 'OK' });
 });
 
 const port = process.env.PORT || 3000;

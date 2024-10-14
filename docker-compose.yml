@@ -47,11 +47,12 @@ services:
       - ./videos:/usr/src/app/videos
 
   mysql:
-    build: ./mysql
+    image: mysql:latest
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
       - MYSQL_DATABASE=videodb
     volumes:
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
       - mysql-data:/var/lib/mysql
 
 volumes:
