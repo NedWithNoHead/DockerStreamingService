@@ -7,7 +7,16 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 
-const upload = multer({ dest: 'videos/' });
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'videos/')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+  }
+});
+
+const upload = multer({ storage: storage });
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
@@ -17,27 +26,25 @@ const pool = mysql.createPool({
 });
 
 app.post('/upload', upload.single('video'), async (req, res) => {
-    if (!req.file) {
-      return res.status(400).json({ error: 'No video file uploaded' });
-    }
-  
-    const { filename, originalname } = req.file;
-    const newFilename = filename + '.mp4';  
-    fs.renameSync(path.join(__dirname, '../videos', filename), path.join(__dirname, '../videos', newFilename));
-    const filePath = path.join('videos', newFilename);
-  
-    try {
-      await pool.execute(
-        'INSERT INTO videos (filename, originalname, path) VALUES (?, ?, ?)',
-        [newFilename, originalname, filePath]
-      );
-      console.log('Uploaded file:', { filename: newFilename, originalname, path: filePath });
-      res.status(201).json({ message: 'Video uploaded successfully' });
-    } catch (error) {
-      console.error('Error saving video information:', error);
-      res.status(500).json({ error: 'Error saving video information' });
-    }
-  });
+  if (!req.file) {
+    return res.status(400).json({ error: 'No video file uploaded' });
+  }
+
+  const { filename, originalname } = req.file;
+  const filePath = path.join('videos', filename);
+
+  try {
+    await pool.execute(
+      'INSERT INTO videos (filename, originalname, path) VALUES (?, ?, ?)',
+      [filename, originalname, filePath]
+    );
+    console.log('Uploaded file:', { filename, originalname, path: filePath });
+    res.status(201).json({ message: 'Video uploaded successfully' });
+  } catch (error) {
+    console.error('Error saving video information:', error);
+    res.status(500).json({ error: 'Error saving video information' });
+  }
+});
 
 const port = process.env.PORT || 3001;
 app.listen(port, () => console.log(`Upload service running on port ${port}`));

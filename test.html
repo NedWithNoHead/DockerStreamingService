@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Video Streaming System Test</title>
+    <style>
+        #videoList li {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+        #videoList li:hover {
+            background-color: #f0f0f0;
+        }
+        #currentVideo {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
     <h1>Video Streaming System Test</h1>
@@ -33,10 +47,15 @@
     <ul id="videoList"></ul>
 
     <h2>Video Player</h2>
+    <div id="currentVideo"></div>
     <video id="videoPlayer" controls style="max-width: 100%;">
         <source src="" type="video/mp4">
         Your browser does not support the video tag.
     </video>
+    <div id="videoError" style="color: red;"></div>
+
+    <h2>Maintenance</h2>
+    <button id="cleanupButton">Cleanup Database</button>
 
     <script>
         async function makeRequest(url, method, body) {
@@ -93,39 +112,41 @@
         });
 
         document.getElementById('loadVideos').addEventListener('click', async () => {
-    try {
-        const response = await fetch('http://localhost:3002/videos');
-        const videos = await response.json();
-        const videoList = document.getElementById('videoList');
-        videoList.innerHTML = '';
-        videos.forEach(video => {
-            const li = document.createElement('li');
-            li.textContent = video.originalname;
-            li.onclick = () => {
-                const videoPlayer = document.getElementById('videoPlayer');
-                videoPlayer.src = `http://localhost:3002/video/${video.id}`;
-                videoPlayer.onerror = (e) => {
-                    console.error('Video error:', e);
-                    document.getElementById('videoError').textContent = 'Error loading video. Check console for details.';
-                };
-                videoPlayer.load();  // Force the video to load
-            };
-            videoList.appendChild(li);
+            try {
+                const response = await fetch('http://localhost:3002/videos');
+                const videos = await response.json();
+                const videoList = document.getElementById('videoList');
+                videoList.innerHTML = '';
+                videos.forEach(video => {
+                    const li = document.createElement('li');
+                    li.textContent = video.originalname;
+                    li.onclick = () => {
+                        const videoPlayer = document.getElementById('videoPlayer');
+                        videoPlayer.src = `http://localhost:3002/video/${video.id}`;
+                        document.getElementById('currentVideo').textContent = `Now playing: ${video.originalname}`;
+                        videoPlayer.onerror = (e) => {
+                            console.error('Video error:', e);
+                            document.getElementById('videoError').textContent = 'Error loading video. Check console for details.';
+                        };
+                        videoPlayer.load();  // Force the video to load
+                        videoPlayer.play();  // Start playing the video
+                    };
+                    videoList.appendChild(li);
+                });
+            } catch (error) {
+                console.error('Error loading videos:', error);
+                alert('Error loading videos. Check the console for details.');
+            }
         });
-    } catch (error) {
-        console.error('Error loading videos:', error);
-        alert('Error loading videos. Check the console for details.');
-    }
-});
 
         document.getElementById('cleanupButton').addEventListener('click', async () => {
             try {
-            const response = await fetch('http://localhost:3003/cleanup', { method: 'POST' });
-            const result = await response.json();
-            alert(result.message);
+                const response = await fetch('http://localhost:3003/cleanup', { method: 'POST' });
+                const result = await response.json();
+                alert(result.message);
             } catch (error) {
-            console.error('Error during cleanup:', error);
-            alert('Error during cleanup. Check the console for details.');
+                console.error('Error during cleanup:', error);
+                alert('Error during cleanup. Check the console for details.');
             }
         });
     </script>
