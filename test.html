@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Streaming System Test</title>
+</head>
+<body>
+    <h1>Video Streaming System Test</h1>
+
+    <h2>Register</h2>
+    <form id="registerForm">
+        <input type="text" id="regUsername" placeholder="Username" required>
+        <input type="password" id="regPassword" placeholder="Password" required>
+        <button type="submit">Register</button>
+    </form>
+
+    <h2>Login</h2>
+    <form id="loginForm">
+        <input type="text" id="loginUsername" placeholder="Username" required>
+        <input type="password" id="loginPassword" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <h2>Upload Video</h2>
+    <form id="uploadForm">
+        <input type="file" id="videoFile" accept="video/mp4" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <h2>Video List</h2>
+    <button id="loadVideos">Load Videos</button>
+    <ul id="videoList"></ul>
+
+    <h2>Video Player</h2>
+    <video id="videoPlayer" controls style="max-width: 100%;">
+        <source src="" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const response = await fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: document.getElementById('regUsername').value,
+                    password: document.getElementById('regPassword').value
+                })
+            });
+            const result = await response.json();
+            alert(result.message);
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const response = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    username: document.getElementById('loginUsername').value,
+                    password: document.getElementById('loginPassword').value
+                })
+            });
+            const result = await response.json();
+            alert(result.message);
+        });
+
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('video', document.getElementById('videoFile').files[0]);
+            const response = await fetch('http://localhost:3001/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+            alert(result.message);
+        });
+
+        document.getElementById('loadVideos').addEventListener('click', async () => {
+            const response = await fetch('http://localhost:3002/videos');
+            const videos = await response.json();
+            const videoList = document.getElementById('videoList');
+            videoList.innerHTML = '';
+            videos.forEach(video => {
+                const li = document.createElement('li');
+                li.textContent = video.originalname;
+                li.onclick = () => {
+                    document.getElementById('videoPlayer').src = `http://localhost:3002/video/${video.id}`;
+                };
+                videoList.appendChild(li);
+            });
+        });
+    </script>
+</body>
+</html>
