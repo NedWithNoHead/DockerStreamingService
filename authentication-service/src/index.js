@@ -1,29 +1,27 @@
 const express = require('express');
 const mysql = require('mysql2/promise');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
 const app = express();
 app.use(express.json());
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'rootpassword',
+  database: process.env.DB_NAME || 'videodb',
 });
 
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
-  const hashedPassword = await bcrypt.hash(password, 10);
 
   try {
     await pool.execute(
       'INSERT INTO users (username, password) VALUES (?, ?)',
-      [username, hashedPassword]
+      [username, password]
     );
     res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
+    console.error('Error registering user:', error);
     res.status(500).json({ error: 'Error registering user' });
   }
 });
@@ -33,24 +31,24 @@ app.post('/login', async (req, res) => {
 
   try {
     const [rows] = await pool.execute(
-      'SELECT * FROM users WHERE username = ?',
-      [username]
+      'SELECT * FROM users WHERE username = ? AND password = ?',
+      [username, password]
     );
 
     if (rows.length > 0) {
-      const match = await bcrypt.compare(password, rows[0].password);
-      if (match) {
-        const token = jwt.sign({ userId: rows[0].id }, 'your-secret-key', { expiresIn: '1h' });
-        res.json({ token });
-      } else {
-        res.status(401).json({ error: 'Invalid credentials' });
-      }
+      res.json({ message: 'Login successful', userId: rows[0].id });
     } else {
       res.status(401).json({ error: 'Invalid credentials' });
     }
   } catch (error) {
+    console.error('Error logging in:', error);
     res.status(500).json({ error: 'Error logging in' });
   }
 });
 
-app.listen(3000, () => console.log('Authentication service running on port 3000'));
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK' });
+});
+
+const port = process.env.PORT || 3000;
+app.listen(port, () => console.log(`Authentication service running on port ${port}`));
