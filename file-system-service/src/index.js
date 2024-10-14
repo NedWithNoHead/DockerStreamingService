@@ -13,6 +13,7 @@ app.post('/write', async (req, res) => {
     await fs.writeFile(path.join(VIDEOS_DIR, filename), content);
     res.json({ message: 'File written successfully' });
   } catch (error) {
+    console.error('Error writing file:', error);
     res.status(500).json({ error: 'Error writing file' });
   }
 });
@@ -22,8 +23,14 @@ app.get('/read/:filename', async (req, res) => {
     const content = await fs.readFile(path.join(VIDEOS_DIR, req.params.filename), 'utf8');
     res.json({ content });
   } catch (error) {
+    console.error('Error reading file:', error);
     res.status(500).json({ error: 'Error reading file' });
   }
 });
 
-app.listen(3003, () => console.log('File system service running on port 3003'));
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK' });
+});
+
+const port = process.env.PORT || 3003;
+app.listen(port, () => console.log(`File system service running on port ${port}`));

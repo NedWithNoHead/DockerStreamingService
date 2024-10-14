@@ -1,0 +1,13 @@
+{
+    "name": "video-streaming-service",
+    "version": "1.0.0",
+    "description": "Video streaming service for video streaming system",
+    "main": "src/index.js",
+    "scripts": {
+      "start": "node src/index.js"
+    },
+    "dependencies": {
+      "express": "^4.17.1",
+      "mysql2": "^2.3.0"
+    }
+  }

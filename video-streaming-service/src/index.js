@@ -6,10 +6,10 @@ const mysql = require('mysql2/promise');
 const app = express();
 
 const pool = mysql.createPool({
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'rootpassword',
+  database: process.env.DB_NAME || 'videodb',
 });
 
 app.get('/videos', async (req, res) => {
@@ -17,6 +17,7 @@ app.get('/videos', async (req, res) => {
     const [rows] = await pool.execute('SELECT * FROM videos');
     res.json(rows);
   } catch (error) {
+    console.error('Error retrieving videos:', error);
     res.status(500).json({ error: 'Error retrieving videos' });
   }
 });
@@ -56,8 +57,14 @@ app.get('/video/:id', async (req, res) => {
       fs.createReadStream(videoPath).pipe(res);
     }
   } catch (error) {
+    console.error('Error streaming video:', error);
     res.status(500).json({ error: 'Error streaming video' });
   }
 });
 
-app.listen(3002, () => console.log('Streaming service running on port 3002'));
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK' });
+});
+
+const port = process.env.PORT || 3002;
+app.listen(port, () => console.log(`Streaming service running on port ${port}`));

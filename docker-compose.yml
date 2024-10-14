@@ -9,45 +9,50 @@ services:
       - DB_USER=root
       - DB_PASSWORD=rootpassword
       - DB_NAME=videodb
+    depends_on:
+      - mysql
 
   upload-service:
     build: ./upload-video-service
     ports:
       - "3001:3001"
     environment:
-      - AUTH_SERVICE_URL=http://auth-service:3000
       - DB_HOST=mysql
       - DB_USER=root
       - DB_PASSWORD=rootpassword
       - DB_NAME=videodb
     volumes:
-      - ./videos:/app/videos
+      - ./videos:/usr/src/app/videos
+    depends_on:
+      - mysql
 
   streaming-service:
     build: ./video-streaming-service
     ports:
       - "3002:3002"
     environment:
-      - AUTH_SERVICE_URL=http://auth-service:3000
       - DB_HOST=mysql
       - DB_USER=root
       - DB_PASSWORD=rootpassword
       - DB_NAME=videodb
     volumes:
-      - ./videos:/app/videos
+      - ./videos:/usr/src/app/videos
+    depends_on:
+      - mysql
 
   file-system-service:
     build: ./file-system-service
+    ports:
+      - "3003:3003"
     volumes:
-      - ./videos:/app/videos
+      - ./videos:/usr/src/app/videos
 
   mysql:
-    image: mysql:5.7
+    build: ./mysql
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
       - MYSQL_DATABASE=videodb
     volumes:
-      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
       - mysql-data:/var/lib/mysql
 
 volumes:
