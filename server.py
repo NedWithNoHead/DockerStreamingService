@@ -12,5 +12,5 @@ class MyHandler(http.server.SimpleHTTPRequestHandler):
 Handler = MyHandler
 
 with socketserver.TCPServer(("", PORT), Handler) as httpd:
-    print(f"Serving Horn Pub at http://localhost:{PORT}")
+    print(f"Serving Premium Online Reel Network at http://localhost:{PORT}")
     httpd.serve_forever()
