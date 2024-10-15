@@ -3,9 +3,17 @@ const multer = require('multer');
 const mysql = require('mysql2/promise');
 const path = require('path');
 const cors = require('cors');
+const fs = require('fs');
 
 const app = express();
 app.use(cors());
+
+const dir = 'file_system_service';
+
+// creates the file system if it doesnt exist
+if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir);
+}
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
