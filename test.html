@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Horn Pub - Video Streaming</title>
+    <title>Jumbo Action Video - Streaming Service - Video Streaming</title>
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
         h1, h2 { text-align: center; }
@@ -39,18 +39,8 @@
     </style>
 </head>
 <body>
-    <h1>Horn Pub</h1>
+    <h1>Jumbo Action Video</h1>
     <h2>Video Streaming System</h2>
-
-    <h3>Upload Video</h3>
-    <form id="uploadForm">
-        <input type="file" id="videoFile" accept="video/mp4" required>
-        <button type="submit">Upload</button>
-    </form>
-
-    <h3>Video List</h3>
-    <button id="loadVideos">Load Videos</button>
-    <ul id="videoList"></ul>
 
     <h3>Video Player</h3>
     <div id="currentVideo"></div>
@@ -59,9 +49,18 @@
         Your browser does not support the video tag.
     </video>
     <div id="videoError" style="color: red;"></div>
+    
+    <h3>Video List</h3>
+    <button id="loadVideos">Load Videos</button>
+    <ul id="videoList"></ul>
 
-    <h3>Maintenance</h3>
-    <button id="cleanupButton">Cleanup Database</button>
+    <h3>Upload Video</h3>
+    <form id="uploadForm">
+        <input type="file" id="videoFile" accept="video/mp4" required>
+        <button type="submit">Upload</button>
+    </form>
+
+
 
     <script>
         document.getElementById('uploadForm').addEventListener('submit', async (e) => {
@@ -109,16 +108,6 @@
             }
         });
 
-        document.getElementById('cleanupButton').addEventListener('click', async () => {
-            try {
-                const response = await fetch('http://localhost:3003/cleanup', { method: 'POST' });
-                const result = await response.json();
-                alert(result.message);
-            } catch (error) {
-                console.error('Error during cleanup:', error);
-                alert('Error during cleanup. Check the console for details.');
-            }
-        });
     </script>
 </body>
 </html>

@@ -32,7 +32,7 @@ app.post('/upload', upload.single('video'), async (req, res) => {
 
   const { filename, originalname } = req.file;
   const filePath = path.join('videos', filename);
-
+  
   try {
     await pool.execute(
       'INSERT INTO videos (filename, originalname, path) VALUES (?, ?, ?)',

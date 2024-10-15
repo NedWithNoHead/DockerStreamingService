@@ -39,20 +39,6 @@ services:
     depends_on:
       - mysql
 
-  file-system-service:
-    build: ./file-system-service
-    ports:
-      - "3003:3003"
-    volumes:
-      - ./videos:/usr/src/app/videos
-    environment:
-      - DB_HOST=mysql
-      - DB_USER=root
-      - DB_PASSWORD=rootpassword
-      - DB_NAME=videodb
-    depends_on:
-      - mysql
-
   mysql:
     image: mysql:latest
     environment:
