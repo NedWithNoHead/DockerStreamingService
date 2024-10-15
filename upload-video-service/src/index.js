@@ -9,7 +9,7 @@ app.use(cors());
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'videos/')
+    cb(null, 'file_system_service/')
   },
   filename: function (req, file, cb) {
     cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
@@ -31,11 +31,11 @@ app.post('/upload', upload.single('video'), async (req, res) => {
   }
 
   const { filename, originalname } = req.file;
-  const filePath = path.join('videos', filename);
+  const filePath = path.join('file_system_service', filename);
   
   try {
     await pool.execute(
-      'INSERT INTO videos (filename, originalname, path) VALUES (?, ?, ?)',
+      'INSERT INTO file_system_service (filename, originalname, path) VALUES (?, ?, ?)',
       [filename, originalname, filePath]
     );
     console.log('Uploaded file:', { filename, originalname, path: filePath });
