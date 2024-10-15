@@ -16,7 +16,7 @@ const pool = mysql.createPool({
 
 app.get('/videos', async (req, res) => {
   try {
-    const [rows] = await pool.execute('SELECT * FROM videos');
+    const [rows] = await pool.execute('SELECT * FROM file_system_service');
     res.json(rows);
   } catch (error) {
     console.error('Error retrieving videos:', error);
@@ -26,7 +26,7 @@ app.get('/videos', async (req, res) => {
 
 app.get('/video/:id', async (req, res) => {
     try {
-      const [rows] = await pool.execute('SELECT * FROM videos WHERE id = ?', [req.params.id]);
+      const [rows] = await pool.execute('SELECT * FROM file_system_service WHERE id = ?', [req.params.id]);
       if (rows.length === 0) {
         console.log(`Video not found for id: ${req.params.id}`);
         return res.status(404).json({ error: 'Video not found' });
@@ -34,7 +34,7 @@ app.get('/video/:id', async (req, res) => {
   
       console.log('Video record:', rows[0]);
   
-      const videoPath = path.join(__dirname, '..', 'videos', rows[0].filename);
+      const videoPath = path.join(__dirname, '..', 'file_system_service', rows[0].filename);
       console.log('Attempting to stream video from path:', videoPath);
   
       if (!fs.existsSync(videoPath)) {
