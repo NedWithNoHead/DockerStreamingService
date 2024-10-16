@@ -51,7 +51,7 @@
                 password: document.getElementById('loginPassword').value
             });
             if (result.message === 'Login successful') {
-                window.location.href = '/test.html';
+                window.location.href = '/main.html';
             } else {
                 alert(result.message || 'Login failed');
             }
@@ -63,7 +63,11 @@
                 username: document.getElementById('signupUsername').value,
                 password: document.getElementById('signupPassword').value
             });
-            alert(result.message);
+            if (result.message === 'User registered successfully') {
+                alert(result.message);
+            } else {
+                alert('Registration failed');
+            }
         });
     </script>
 </body>
