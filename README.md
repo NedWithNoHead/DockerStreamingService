@@ -1,8 +1,8 @@
-# Horn Pub Video Streaming System
+# Premium Online Reel Network - Video Streaming System
 
 ## Introduction
 
-Horn Pub is a simple, containerized video streaming system built as a microservices architecture. It allows users to upload, store, and stream video content through a web interface. This project demonstrates the use of multiple services working together to provide a complete video streaming solution.
+Premium Online Reel Network is a simple, containerized video streaming system built as a microservices architecture. It allows users to upload, store, and stream video content through a web interface. This project demonstrates the use of multiple services working together to provide a complete video streaming solution.
 
 ## Features
 
@@ -10,7 +10,6 @@ Horn Pub is a simple, containerized video streaming system built as a microservi
 - Video upload
 - Video streaming
 - Video listing
-- Database cleanup
 
 ## Architecture
 
@@ -36,8 +35,7 @@ Before you begin, ensure you have the following installed on your system:
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/horn-pub-video-streaming.git
-   cd horn-pub-video-streaming
+   git clone <this repo URL>
    ```
 
 2. Build and start the Docker containers:
@@ -50,15 +48,21 @@ Before you begin, ensure you have the following installed on your system:
    python server.py
    ```
 
+4. Remove the containers:
+   ```
+   docker compose down 
+   or 
+   docker compose down -v
+   ```
+
 ## Usage
 
 1. Open a web browser and navigate to `http://localhost:8000`
-2. You will see the Horn Pub login page. If you're a new user, use the Sign Up form to create an account.
+2. You will see the Premium Online Reel Network login page. If you're a new user, use the Sign Up form to create an account.
 3. After logging in, you'll be redirected to the video streaming page where you can:
    - Upload new videos
    - View the list of available videos
    - Play videos
-   - Perform database cleanup
 
 ## Service Details
 
@@ -74,13 +78,13 @@ Before you begin, ensure you have the following installed on your system:
 - Port: 3002
 - Handles video streaming and listing
 
-### File System Service
-- Port: 3003
-- Manages file system operations and database cleanup
-
 ### MySQL Database
 - Port: 3306
 - Stores user and video metadata
+
+### File System Service
+- Port: Localhost
+- Hosts all the video files
 
 ## Database Management
 
@@ -99,22 +103,11 @@ DELETE FROM videos WHERE id NOT IN (SELECT id FROM (SELECT id FROM videos ORDER 
 ## Troubleshooting
 
 1. If you encounter CORS issues, ensure all services are running and the URLs in the HTML files match the service ports.
-2. For video playback issues, check the browser console for error messages and ensure the video files are correctly stored in the `videos` directory.
-3. If the database cleanup doesn't work, verify that the File System Service has the correct permissions to access the database and video files.
-
-## Future updates - Security 
-
-This project is a demonstration and lacks several security features that would be necessary for a production environment, including:
-
-- Proper session management
-- HTTPS implementation
-- Input validation and sanitization
-- Protection against SQL injection
-- Robust error handling
+2. For video playback issues, check the browser console for error messages and ensure the video files are correctly stored in the `file_system_service` directory.
 
 ## Contributing
 
-Contributions to improve Horn Pub are welcome. Please follow these steps:
+Contributions to improve Premium Online Reel Network are welcome. Please follow these steps:
 
 1. Fork the repository
 2. Create a new branch (`git checkout -b feature/AmazingFeature`)

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jumbo Action Video - Streaming Service - Video Streaming</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #accfc6; }
         h1, h2 { text-align: center; }
         #videoList li {
             cursor: pointer;
@@ -18,6 +18,7 @@
         #currentVideo {
             font-weight: bold;
             margin-bottom: 10px;
+            text-align: center;
         }
         #videoPlayer {
             display: block;
@@ -36,13 +37,20 @@
         button:hover {
             background-color: #45a049;
         }
+        .banner {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
     </style>
 </head>
 <body>
+    <div>
+        <img src="https://cdn.discordapp.com/attachments/871565039063154738/1296153485066113074/image.png?ex=67114080&is=670fef00&hm=26e519448edf777b360929b912d4c6b3f11fcd36c5852d845b9f737ae2b7548a" 
+             alt="Banner Image" class="banner">
+    </div>
     <h1>Jumbo Action Video</h1>
-    <h2>Video Streaming System</h2>
 
-    <h3>Video Player</h3>
     <div id="currentVideo"></div>
     <video id="videoPlayer" controls style="max-width: 100%;">
         <source src="" type="video/mp4">
